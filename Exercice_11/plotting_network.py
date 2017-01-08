@@ -3,11 +3,11 @@ import pickle
 import pylab as pl
 from matplotlib import collections  as mc
 
-### Configuration jeux de données ###
+### Dataset parameters ###
 robot_params = [2,2]
 cartesian_range = [[-1,-3],[1,-1]]
 
-### affichage configuration ###    
+### Plot robot configuration ###    
 def plot_config(thetas, robot_params, objectif = [0, 0]):
     l1, l2 = robot_params
     th1_r, th2_r = np.deg2rad(thetas[0]), np.deg2rad(thetas[1])
@@ -28,11 +28,11 @@ def plot_config(thetas, robot_params, objectif = [0, 0]):
     ax.margins(0.1)
     pl.show()
 
-### Charger NN ### 
+### Load neural network ### 
 with open('NN_IK.p', 'rb') as fichier:
     regressor = pickle.load(fichier)
 
-### Affichage ###
+### Display on the screen ###
 pl.close('all')
 plot_config([0, 0], robot_params)
 
