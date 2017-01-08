@@ -1,3 +1,9 @@
+##Useful functions:
+#numpy.linalg.norm
+#numpy.argmin
+#append function for lists
+#numpy.count_nonzero
+
 import numpy as np
 import sklearn.datasets as ds
 

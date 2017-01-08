@@ -2,10 +2,14 @@ import numpy as np
 import sklearn.datasets as ds
 import sklearn.svm as svm
 
+### Load dataset ###
+
 iris = ds.load_iris()
 
 features_iris = iris.data
 target_iris = iris.target
+
+### Split dataset ###
 
 N = len(features_iris)
 N_train = int(0.6 * N)
@@ -25,41 +29,45 @@ training_target = shuffled_target_iris[:N_train]
 validation_target = shuffled_target_iris[N_train:N_train + N_valid]
 test_target = shuffled_target_iris[N_train + N_valid:]
 
-### Choix paramètres grossier ###
+
+### Coarse parameter selection  ###
 C = [10**i for i in range(-3, 3)]
-val_err = []
-for i in range(1000):
-    validation_errors = []
+validation_errors = []
+for i in range(100): #Repeat the process several time because the algorithm does not perform always exactly the same
+    errors = []
     for c in C:
         algo = svm.LinearSVC(C = c)
         algo.fit(training_features, training_target)
         
-        validation_errors.append(np.sum(algo.predict(validation_features) != validation_target))
-    val_err.append(validation_errors)
+        errors.append(np.sum(algo.predict(validation_features) != validation_target))
+    validation_errors.append(errors)
 
-print(np.mean(np.array(val_err), axis = 0))
+print 'Value of C :      ', C
+print 'Validation error :', np.mean(np.array(validation_errors), axis = 0)
 
-### Choix paramètre plus fin ###
+### Finner selection ###
 C = np.arange(0.1, 1, 0.2)
-val_err = []
-for i in range(1000):
-    validation_errors = []
+validation_errors = []
+for i in range(100): #Repeat the process several time because the algorithm does not perform always exactly the same
+    errors = []
     for c in C:
         algo = svm.LinearSVC(C = c)
         algo.fit(training_features, training_target)
         
-        validation_errors.append(np.sum(algo.predict(validation_features) != validation_target))
-    val_err.append(validation_errors)
+        errors.append(np.sum(algo.predict(validation_features) != validation_target))
+    validation_errors.append(errors)
 
-print np.mean(np.array(val_err), axis = 0)
+print '\nValue of C :      ', C
+print 'Validation error :', np.mean(np.array(validation_errors), axis = 0)
 
-### Test paramètre retenu ###
+### Test chosen parameters ###
+
 c = 0.1
-test_err = []
-for i in range(1000):
+test_errors = []
+for i in range(100):
     algo = svm.LinearSVC(C = c)
     algo.fit(np.concatenate((training_features, validation_features), axis = 0),
              np.concatenate((training_target, validation_target), axis = 0))
-    test_err.append(np.sum(algo.predict(test_features) != test_target))
+    test_errors.append(np.sum(algo.predict(test_features) != test_target))
 
-print(np.mean(np.array(test_err), axis = 0))
+print '\nTesting error rate :', np.mean(np.array(test_errors), axis = 0) / N_test
